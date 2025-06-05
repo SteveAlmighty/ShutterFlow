@@ -32,7 +32,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.explore.ExploreScreen
-import com.example.shutterflow.presentation.gallery.GalleryScreen
+import com.example.shutterflow.presentation.gallery.PhotoGalleryScreen
+import com.example.shutterflow.presentation.gallery.PhotoGalleryViewModel
 import com.example.shutterflow.presentation.home.HomeScreen
 import com.example.shutterflow.presentation.log.LogScreen
 import com.example.shutterflow.presentation.profile.ProfileScreen
@@ -40,7 +41,7 @@ import com.example.shutterflow.ui.theme.TealBlue
 
 
 @Composable
-fun NavHostScreen() {
+fun NavHostScreen(viewModel: PhotoGalleryViewModel) {
     val navController = rememberNavController()
     var bottomBarVisibility by remember {
         mutableStateOf(true)
@@ -63,7 +64,15 @@ fun NavHostScreen() {
         floatingActionButton = {
             AnimatedVisibility(visible = bottomBarVisibility) {
                 FloatingActionButton(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("/gallery") {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                     containerColor = TealBlue,
                     modifier = Modifier
                         .offset(y = 43.dp)
@@ -101,9 +110,10 @@ fun NavHostScreen() {
                 bottomBarVisibility = false
                 ProfileScreen()
             }
+
             composable(route = "/gallery") {
-                bottomBarVisibility = true // Show the bottom bar if you want it visible
-                GalleryScreen()
+                bottomBarVisibility = false // Show the bottom bar if you want it visible
+                PhotoGalleryScreen(viewModel)
             }
         }
     }
