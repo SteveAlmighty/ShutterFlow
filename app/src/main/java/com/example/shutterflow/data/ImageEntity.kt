@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class ImageEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val filePath: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val category: String // "Portrait", "Landscape", etc.
 )

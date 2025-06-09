@@ -1,6 +1,9 @@
 package com.example.shutterflow.utils
 
+import ShootPlannerScreen
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -26,16 +29,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.explore.ExploreScreen
+import com.example.shutterflow.presentation.gallery.CategoryGalleryScreen
+import com.example.shutterflow.presentation.gallery.CategoryListScreen
+import com.example.shutterflow.presentation.gallery.FullscreenImageScreen
 import com.example.shutterflow.presentation.gallery.PhotoGalleryScreen
 import com.example.shutterflow.presentation.gallery.PhotoGalleryViewModel
 import com.example.shutterflow.presentation.home.HomeScreen
-import com.example.shutterflow.presentation.log.LogScreen
 import com.example.shutterflow.presentation.profile.ProfileScreen
 import com.example.shutterflow.ui.theme.TealBlue
 
@@ -103,17 +110,42 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel) {
             }
             composable(route = "/log") {
                 bottomBarVisibility = true
-                LogScreen()
+                ShootPlannerScreen()
             }
 
             composable(route = "/profile") {
                 bottomBarVisibility = false
-                ProfileScreen()
+                ProfileScreen(navController,viewModel, )
             }
 
             composable(route = "/gallery") {
                 bottomBarVisibility = false // Show the bottom bar if you want it visible
                 PhotoGalleryScreen(viewModel)
+            }
+
+            composable("category_list") {
+                CategoryListScreen(viewModel) { selectedCategory ->
+                    navController.navigate("category_gallery/$selectedCategory")
+                }
+            }
+            composable("category_gallery/{category}") { backStack ->
+                val category = backStack.arguments?.getString("category") ?: ""
+                CategoryGalleryScreen(
+                    category = category,
+                    viewModel = viewModel,
+                    navController = navController,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable("fullscreen/{imagePath}",
+                arguments = listOf(navArgument("imagePath") { type = NavType.StringType }),
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            ) { backStackEntry ->
+                val imagePath = backStackEntry.arguments?.getString("imagePath") ?: ""
+                FullscreenImageScreen(imagePath) {
+                    navController.popBackStack()
+                }
             }
         }
     }

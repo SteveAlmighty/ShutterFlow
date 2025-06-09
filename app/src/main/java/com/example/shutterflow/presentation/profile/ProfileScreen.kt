@@ -2,6 +2,7 @@ package com.example.shutterflow.presentation.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,24 +19,34 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.shutterflow.R
-import com.example.shutterflow.presentation.profile.components.AlbumCard
-import com.example.shutterflow.presentation.profile.components.AlbumData
+import com.example.shutterflow.presentation.gallery.PhotoGalleryViewModel
+import com.example.shutterflow.presentation.profile.components.AlbumTab
 import com.example.shutterflow.ui.theme.TealBlue
 
 
@@ -48,75 +59,42 @@ val sampleImages = listOf(
     R.drawable.street1
 )
 
-val sampleAlbumDataList: List<AlbumData> = listOf(
-
-    AlbumData(
-        id = 2,
-        title = "Urban Landscapes",
-        number = "8"
-    ),
-    AlbumData(
-        id = 3,
-        title = "Mountain Hike",
-        number = "2"
-    ),
-    AlbumData(
-        id = 4,
-        title = "Family Portraits",
-        number = "8"
-    ),
-    AlbumData(
-        id = 5,
-        title = "Food Photography",
-        number = "13"
-    ),
-    AlbumData(
-        id = 6,
-        title = "Pet Antics",
-        number = "23"
-    ),
-    AlbumData(
-        id = 7,
-        title = "Abstract Nature",
-        number = "9"
-    ),
-    AlbumData(
-        id = 8,
-        title = "Road Trip Memories",
-        number = "7"
-    )
-)
-
 
 @Composable
-fun ProfileScreen(){
+fun ProfileScreen(
+    navController: NavController,
+    viewModel: PhotoGalleryViewModel,
+   
+
+){
+
+    val context = LocalContext.current
+
+    // Default and selectable images (replace these with real resource/image URIs in your project)
+    val imageOptions = listOf(
+        R.drawable.portrait1,
+        R.drawable.landscape1,
+        R.drawable.macro1,
+        R.drawable.food1 // This will be the fallback/default image
+    )
+
+    var selectedImage by rememberSaveable{ mutableIntStateOf(R.drawable.portrait1) }
+    var showImagePicker by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         // Top Bar
         Row(
-            modifier = Modifier.fillMaxWidth().padding(5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Home,
-                contentDescription = "Home",
-                tint = Color.DarkGray
-            )
-            Text(
-                text = "My Profile",
-                color = Color.DarkGray,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Settings",
-                tint = Color.DarkGray
-            )
+            Icon(imageVector = Icons.Default.Home, contentDescription = "Home", tint = Color.DarkGray)
+            Text("My Profile", color = Color.DarkGray, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings", tint = Color.DarkGray)
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -124,29 +102,54 @@ fun ProfileScreen(){
         Column(
             modifier = Modifier
                 .fillMaxHeight(0.3f)
-                .fillMaxWidth()
-                ,
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-                Image(
-                    painter = painterResource(id = R.drawable.portrait1),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .size(160.dp)
-                        .clip(RoundedCornerShape(100.dp))
-                    ,
-                    contentScale = ContentScale.Crop
-                )
-
-
-            Text(
-                "Dominic Szlabozlai",
-                fontSize = 16.sp,
-                color = Color.DarkGray,
-                fontWeight = FontWeight.Bold,
+            Image(
+                painter = painterResource(id = selectedImage),
+                contentDescription = "Profile Picture",
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .size(160.dp)
+                    .clip(RoundedCornerShape(100.dp))
+                    .clickable { showImagePicker = true },
+                contentScale = ContentScale.Crop
+            )
+
+        }
+
+        if (showImagePicker) {
+            AlertDialog(
+                onDismissRequest = { showImagePicker = false },
+                title = { Text("Select Profile Picture") },
+                text = {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.height(250.dp)
+                    ) {
+                        items(imageOptions.size) { imageRes ->
+                            Image(
+                                painter = painterResource(id = imageOptions[imageRes]),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(40.dp))
+                                    .clickable {
+                                        selectedImage = imageOptions[imageRes]
+                                        showImagePicker = false
+                                    },
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showImagePicker = false }) {
+                        Text("Cancel")
+                    }
+                }
             )
 
         }
@@ -209,43 +212,7 @@ fun ProfileScreen(){
                     }
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "My Album",
-                        color = Color.DarkGray,
-                        modifier = Modifier.padding(start = 10.dp),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = "See All",
-                        modifier = Modifier.padding(end = 10.dp),
-                        fontSize = 12.sp,
-                        color = TealBlue
-                    )
-                }
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    userScrollEnabled = false // only show top 6
-                ) {
-                    items(6) { index ->
-                        AlbumCard(item = sampleAlbumDataList[index])
-                    }
-                }
+               AlbumTab(navController, viewModel)
 
             }
         }
@@ -253,10 +220,4 @@ fun ProfileScreen(){
 }
 
 
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    ProfileScreen()
-}
 

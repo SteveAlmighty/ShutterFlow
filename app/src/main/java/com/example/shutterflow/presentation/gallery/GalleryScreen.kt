@@ -7,12 +7,14 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,10 +33,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -43,14 +50,18 @@ import java.io.File
 fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
     val context = LocalContext.current
     val images by viewModel.images.collectAsState()
+    val categories = listOf("Portrait", "Landscape", "Street", "Night", "Creative")
+    var showCategoryDialog by remember { mutableStateOf<Boolean?>(false) }
+    var pendingUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
 
-    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris ->
-            uris.forEach { uri ->
-                val file = saveImageToInternalStorage(context, uri)
-                file?.let { viewModel.addImage(it.absolutePath) }
+            if (uris.isNotEmpty()) {
+                pendingUris = uris
+                showCategoryDialog = true
             }
         }
     )
@@ -61,10 +72,11 @@ fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Button(onClick = {
-            multiplePhotoPickerLauncher.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
+        Button(
+            onClick = {
+                imagePickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
         }) {
             Text(text = "Import Your Photos")
         }
@@ -84,6 +96,8 @@ fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
                         modifier = Modifier
                             .aspectRatio(1f)
                             .clip(RoundedCornerShape(8.dp))
+                            .fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
 
                     IconButton(
@@ -98,6 +112,34 @@ fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
                 }
             }
         }
+    }
+    // Category Picker Dialog
+    if (showCategoryDialog == true) {
+        AlertDialog(
+            onDismissRequest = { showCategoryDialog = false },
+            title = { Text("Select Category") },
+            text = {
+                Column {
+                    categories.forEach { category ->
+                        Text(
+                            text = category,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    showCategoryDialog = false
+                                    pendingUris.forEach { uri ->
+                                        val file = saveImageToInternalStorage(context, uri)
+                                        file?.let { viewModel.addImage(it.absolutePath, category) }
+                                    }
+                                }
+                                .padding(8.dp)
+                        )
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {}
+        )
     }
 }
 
