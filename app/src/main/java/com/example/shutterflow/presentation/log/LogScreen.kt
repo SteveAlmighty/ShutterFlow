@@ -40,7 +40,7 @@ fun ShootPlannerScreen(viewModel: ShootViewModel = viewModel()) {
     var showTimePicker by remember { mutableStateOf(false) }
     var editingShoot by remember { mutableStateOf<ScheduledShoot?>(null) }
 
-    val shoots = viewModel.dao.getAllShoots().collectAsState(initial = emptyList())
+    val shoots = viewModel.shoots.collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier

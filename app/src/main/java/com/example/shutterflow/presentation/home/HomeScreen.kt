@@ -96,7 +96,9 @@ val sampleLearnTabs = listOf(
 )
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+  sharedVm: UserSettingsViewModel
+){
   val scrollState = rememberScrollState()
   Surface {
     Column(
@@ -105,7 +107,7 @@ fun HomeScreen(){
         .verticalScroll(scrollState)
     ) {
 
-      TopAppBar()
+      TopAppBar(sharedVm)
 
       HorizontalDivider(modifier = Modifier
         .fillMaxWidth()
@@ -129,8 +131,6 @@ fun HomeScreen(){
     }
   }
 
-
-
 }
 
 
@@ -138,8 +138,8 @@ fun HomeScreen(){
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPrev(){
-  HomeScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPrev(){
+//  HomeScreen()
+//}

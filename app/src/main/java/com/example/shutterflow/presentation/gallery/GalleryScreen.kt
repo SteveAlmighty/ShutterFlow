@@ -55,7 +55,6 @@ fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
     var pendingUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
 
-
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris ->

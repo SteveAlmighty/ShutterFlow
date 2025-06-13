@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.shutterflow.data.DatabaseProvider
 import com.example.shutterflow.data.ImageDao
 import com.example.shutterflow.data.ImageEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -32,7 +33,7 @@ class PhotoGalleryViewModel(context: Context) : ViewModel() {
     }
 
     fun addImage(filePath: String, category: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val image = ImageEntity(
                 filePath = filePath,
                 timestamp = System.currentTimeMillis(),
@@ -43,7 +44,7 @@ class PhotoGalleryViewModel(context: Context) : ViewModel() {
     }
 
     fun deleteImage(image: ImageEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dao.delete(image)
             File(image.filePath).delete() // also delete from storage
         }

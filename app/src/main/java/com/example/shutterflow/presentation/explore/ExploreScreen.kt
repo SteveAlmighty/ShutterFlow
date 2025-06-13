@@ -1,5 +1,6 @@
 package com.example.shutterflow.presentation.explore
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.home.components.LearnList
 import com.example.shutterflow.presentation.home.components.PracticeCarousel
@@ -38,7 +40,9 @@ import com.example.shutterflow.ui.theme.TealBlue
 
 
 @Composable
-fun ExploreScreen(){
+fun ExploreScreen(
+    navController: NavController
+){
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -65,7 +69,8 @@ fun ExploreScreen(){
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
-                tint = Color.DarkGray
+                tint = Color.DarkGray,
+                modifier = Modifier.clickable { navController.navigate("/setting") }
             )
         }
 
@@ -114,47 +119,47 @@ fun ExploreScreen(){
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ExploreTabPrev(){
-    val samplePracticeTabs = listOf(
-        PracticeTabData(
-            id = 1,
-            title = "Portraits",
-            description = "Master depth & focus",
-            image = R.drawable.portrait1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 2,
-            title = "Landscapes",
-            description = "Capture scenic views",
-            image = R.drawable.landscape1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 3,
-            title = "Street Style",
-            description = "Urban life moments",
-            image = R.drawable.street1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 4,
-            title = "Food",
-            description = "Capture culinary moments",
-            image = R.drawable.food1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 5,
-            title = "Night Sky",
-            description = "Astrophotography basics",
-            image = R.drawable.astro1
-        ),
-        PracticeTabData(
-            id = 6,
-            title = "Macro",
-            description = "Capture stunning details",
-            image = R.drawable.macro1
-        )
-
-    )
-    ExploreScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ExploreTabPrev(){
+//    val samplePracticeTabs = listOf(
+//        PracticeTabData(
+//            id = 1,
+//            title = "Portraits",
+//            description = "Master depth & focus",
+//            image = R.drawable.portrait1 // Replace with your actual drawable resource
+//        ),
+//        PracticeTabData(
+//            id = 2,
+//            title = "Landscapes",
+//            description = "Capture scenic views",
+//            image = R.drawable.landscape1 // Replace with your actual drawable resource
+//        ),
+//        PracticeTabData(
+//            id = 3,
+//            title = "Street Style",
+//            description = "Urban life moments",
+//            image = R.drawable.street1 // Replace with your actual drawable resource
+//        ),
+//        PracticeTabData(
+//            id = 4,
+//            title = "Food",
+//            description = "Capture culinary moments",
+//            image = R.drawable.food1 // Replace with your actual drawable resource
+//        ),
+//        PracticeTabData(
+//            id = 5,
+//            title = "Night Sky",
+//            description = "Astrophotography basics",
+//            image = R.drawable.astro1
+//        ),
+//        PracticeTabData(
+//            id = 6,
+//            title = "Macro",
+//            description = "Capture stunning details",
+//            image = R.drawable.macro1
+//        )
+//
+//    )
+//    ExploreScreen()
+//}

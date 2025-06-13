@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 import coil.compose.rememberAsyncImagePainter
 import java.io.File
 
-
 @Composable
 fun FullscreenImageScreen(imagePath: String, onBack: () -> Unit) {
     Box(

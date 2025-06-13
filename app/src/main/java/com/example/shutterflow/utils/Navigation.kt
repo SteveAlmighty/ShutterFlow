@@ -1,6 +1,7 @@
 package com.example.shutterflow.utils
 
 import ShootPlannerScreen
+import android.app.Application
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,8 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -43,12 +47,21 @@ import com.example.shutterflow.presentation.gallery.FullscreenImageScreen
 import com.example.shutterflow.presentation.gallery.PhotoGalleryScreen
 import com.example.shutterflow.presentation.gallery.PhotoGalleryViewModel
 import com.example.shutterflow.presentation.home.HomeScreen
+import com.example.shutterflow.presentation.home.UserSettingsViewModel
 import com.example.shutterflow.presentation.profile.ProfileScreen
+import com.example.shutterflow.presentation.settings.SettingsScreen
+import com.example.shutterflow.presentation.settings.SettingsViewModel
 import com.example.shutterflow.ui.theme.TealBlue
 
 
 @Composable
-fun NavHostScreen(viewModel: PhotoGalleryViewModel) {
+fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsViewModel) {
+
+    val context = LocalContext.current
+    val userPref: UserSettingsViewModel = viewModel(
+        factory = ViewModelProvider.AndroidViewModelFactory(context.applicationContext as Application)
+    )
+
     val navController = rememberNavController()
     var bottomBarVisibility by remember {
         mutableStateOf(true)
@@ -101,12 +114,12 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel) {
         ) {
             composable(route = "/home") {
                 bottomBarVisibility = true
-                HomeScreen()
+                HomeScreen(userPref)
             }
 
             composable(route = "/explore") {
                 bottomBarVisibility = false
-                ExploreScreen()
+                ExploreScreen(navController)
             }
             composable(route = "/log") {
                 bottomBarVisibility = true
@@ -115,7 +128,7 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel) {
 
             composable(route = "/profile") {
                 bottomBarVisibility = false
-                ProfileScreen(navController,viewModel, )
+                ProfileScreen(navController,viewModel, userPref)
             }
 
             composable(route = "/gallery") {
@@ -146,6 +159,10 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel) {
                 FullscreenImageScreen(imagePath) {
                     navController.popBackStack()
                 }
+            }
+            composable(route = "/setting") {
+                bottomBarVisibility = false
+                SettingsScreen(settingsViewModel)
             }
         }
     }

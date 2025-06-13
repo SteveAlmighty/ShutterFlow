@@ -1,19 +1,14 @@
 package com.example.shutterflow.presentation.log
 
 import android.app.Application
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.shutterflow.data.reminderdb.AppDatabase
 import com.example.shutterflow.data.reminderdb.ScheduledShoot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.util.Calendar
-
 
 
 class ShootViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,17 +19,17 @@ class ShootViewModel(application: Application) : AndroidViewModel(application) {
     ).build()
     val dao = db.shootDao()
 
-//    val shoots = dao.getAllShoots().collectAsState(initial = emptyList())
+    val shoots: Flow<List<ScheduledShoot>> = dao.getAllShoots()
 
-    fun addShoot(shoot: ScheduledShoot) = viewModelScope.launch {
+    fun addShoot(shoot: ScheduledShoot) = viewModelScope.launch(Dispatchers.IO) {
         dao.insert(shoot)
     }
 
-    fun deleteShoot(shoot: ScheduledShoot) = viewModelScope.launch {
+    fun deleteShoot(shoot: ScheduledShoot) = viewModelScope.launch(Dispatchers.IO) {
         dao.delete(shoot)
     }
 
-    fun updateShoot(shoot: ScheduledShoot) = viewModelScope.launch {
+    fun updateShoot(shoot: ScheduledShoot) = viewModelScope.launch(Dispatchers.IO) {
         dao.update(shoot)
     }
 }

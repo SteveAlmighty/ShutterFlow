@@ -1,5 +1,6 @@
 package com.example.shutterflow.presentation.profile
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,11 +27,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,12 +43,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shutterflow.R
+import com.example.shutterflow.data.UserPreferencesManager
 import com.example.shutterflow.presentation.gallery.PhotoGalleryViewModel
+import com.example.shutterflow.presentation.home.UserSettingsViewModel
 import com.example.shutterflow.presentation.profile.components.AlbumTab
+import com.example.shutterflow.presentation.profile.components.ProfilePicturePicker
+import com.example.shutterflow.presentation.profile.components.avatarOptions
 import com.example.shutterflow.ui.theme.TealBlue
+import kotlinx.coroutines.launch
 
 
 val sampleImages = listOf(
@@ -59,26 +64,26 @@ val sampleImages = listOf(
     R.drawable.street1
 )
 
-
+@SuppressLint("RememberReturnType")
 @Composable
 fun ProfileScreen(
     navController: NavController,
     viewModel: PhotoGalleryViewModel,
-   
-
+    sharedVm: UserSettingsViewModel
 ){
+
+    val userName by sharedVm.userName.collectAsState()
 
     val context = LocalContext.current
 
-    // Default and selectable images (replace these with real resource/image URIs in your project)
-    val imageOptions = listOf(
-        R.drawable.portrait1,
-        R.drawable.landscape1,
-        R.drawable.macro1,
-        R.drawable.food1 // This will be the fallback/default image
-    )
+    val scope = rememberCoroutineScope()
+    val selectedImageName by UserPreferencesManager.getProfilePictureUriFlow(context).collectAsState(initial = null)
 
-    var selectedImage by rememberSaveable{ mutableIntStateOf(R.drawable.portrait1) }
+    val selectedImageResId = remember(selectedImageName) {
+        avatarOptions.find { it.second == selectedImageName }?.first ?: R.drawable.watermelon1
+    }
+
+
     var showImagePicker by remember { mutableStateOf(false) }
 
     Column(
@@ -92,9 +97,22 @@ fun ProfileScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home", tint = Color.DarkGray)
-            Text("My Profile", color = Color.DarkGray, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings", tint = Color.DarkGray)
+            Icon(
+                imageVector = Icons.Default.Home,
+                contentDescription = "Home",
+                tint = Color.DarkGray
+            )
+            Text(
+                "My Profile",
+                color = Color.DarkGray,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+                tint = Color.DarkGray
+            )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -107,7 +125,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = selectedImage),
+                painter =  painterResource(id = selectedImageResId),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(160.dp)
@@ -115,7 +133,6 @@ fun ProfileScreen(
                     .clickable { showImagePicker = true },
                 contentScale = ContentScale.Crop
             )
-
         }
 
         if (showImagePicker) {
@@ -123,25 +140,12 @@ fun ProfileScreen(
                 onDismissRequest = { showImagePicker = false },
                 title = { Text("Select Profile Picture") },
                 text = {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.height(250.dp)
-                    ) {
-                        items(imageOptions.size) { imageRes ->
-                            Image(
-                                painter = painterResource(id = imageOptions[imageRes]),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(40.dp))
-                                    .clickable {
-                                        selectedImage = imageOptions[imageRes]
-                                        showImagePicker = false
-                                    },
-                                contentScale = ContentScale.Crop
-                            )
+                    ProfilePicturePicker(
+                        context = context,
+                        currentSelection = selectedImageName
+                    ) { resId, imageName ->
+                        scope.launch {
+                            UserPreferencesManager.setProfilePictureUri(context, imageName)
                         }
                     }
                 },
@@ -151,8 +155,28 @@ fun ProfileScreen(
                     }
                 }
             )
-
         }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+
+            userName?.let {
+                Text(
+                    text = it,
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(start = 10.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
 
         Surface(
             modifier = Modifier.clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
