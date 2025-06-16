@@ -19,7 +19,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.shutterflow.R
+import com.example.shutterflow.ui.theme.LightTeal
 
 
 val avatarOptions = listOf(
@@ -53,15 +55,15 @@ fun ProfilePicturePicker(
                     .padding(8.dp)
                     .border(
                         width = if (isSelected) 3.dp else 1.dp,
-                        color = if (isSelected) Color.Blue else Color.Gray,
+                        color = if (isSelected) LightTeal else Color.Gray,
                         shape = CircleShape
                     )
                     .clickable {
                         onImageSelected(resId, name)
                     }
             ) {
-                Image(
-                    painter = painterResource(id = resId),
+                AsyncImage(
+                    model = resId,
                     contentDescription = null,
                     modifier = Modifier
                         .size(64.dp)

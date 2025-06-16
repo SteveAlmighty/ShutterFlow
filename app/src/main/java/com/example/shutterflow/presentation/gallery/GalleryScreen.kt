@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import java.io.File
 
@@ -89,8 +90,8 @@ fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
         ) {
             items(images) { image ->
                 Box {
-                    Image(
-                        painter = rememberAsyncImagePainter(File(image.filePath)),
+                    AsyncImage(
+                        model = File(image.filePath),
                         contentDescription = null,
                         modifier = Modifier
                             .aspectRatio(1f)

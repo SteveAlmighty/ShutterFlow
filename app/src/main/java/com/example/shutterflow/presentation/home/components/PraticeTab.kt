@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.shutterflow.R
 import com.example.shutterflow.ui.theme.TealBlue
 
@@ -48,8 +49,8 @@ fun PracticeTab(
     ) {
             // 1. Image Section
 
-            Image(
-                painter = painterResource(id = item.image),
+            AsyncImage(
+                model = item.image,
                 contentDescription = "Card Image",
                 modifier = Modifier
                     .width(170.dp).

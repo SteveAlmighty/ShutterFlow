@@ -3,6 +3,7 @@ package com.example.shutterflow.presentation.home.components
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.home.UserSettingsViewModel
 import com.example.shutterflow.presentation.profile.components.avatarOptions
@@ -32,6 +35,7 @@ import com.example.shutterflow.ui.theme.TealBlue
 @SuppressLint("RememberReturnType")
 @Composable
 fun TopAppBar(
+    navController: NavController,
     sharedVm: UserSettingsViewModel
 ){
     val selectedImageName by sharedVm.profileImageName.collectAsState()
@@ -69,12 +73,13 @@ fun TopAppBar(
             Image(
                 painter = painterResource(id = R.drawable.notifications),
                 contentDescription = "notification",
+                modifier = Modifier.clickable { navController.navigate("/log") }
 
                 )
 
-            Image(
-                painter =
-                painterResource(id = selectedResId)
+            AsyncImage(
+                model =
+                selectedResId
                 ,
                 contentDescription = "ProfilePicture",
                 contentScale = ContentScale.Crop,

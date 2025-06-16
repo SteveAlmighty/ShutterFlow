@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.*
 import com.example.shutterflow.data.reminderdb.ScheduledShoot
 import com.example.shutterflow.presentation.log.ShootViewModel
+import com.example.shutterflow.ui.theme.LightTeal
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -67,16 +68,31 @@ fun ShootPlannerScreen(viewModel: ShootViewModel = viewModel()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = repeatWeekly,
-                onCheckedChange = { repeatWeekly = it }
+                onCheckedChange = { repeatWeekly = it },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = LightTeal,
+                    uncheckedColor = LightTeal
+                )
             )
             Text("Repeat Weekly")
         }
 
-        Button(onClick = { showDatePicker = true }) {
+        Button(
+            onClick = { showDatePicker = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = LightTeal,
+                contentColor = Color.Black
+            )
+            ) {
             Text("Select Date")
         }
 
-        Button(onClick = { showTimePicker = true }) {
+        Button(
+            onClick = { showTimePicker = true },
+            colors = ButtonDefaults.buttonColors(
+            containerColor = LightTeal,
+            contentColor = Color.Black
+        )) {
             Text("Select Time")
         }
 
@@ -111,7 +127,11 @@ fun ShootPlannerScreen(viewModel: ShootViewModel = viewModel()) {
                     editingShoot = null
                 }
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.align(Alignment.End),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = LightTeal,
+                contentColor = Color.Black
+            )
         ) {
             Text(if (editingShoot != null) "Update Shoot" else "Schedule Notification")
         }

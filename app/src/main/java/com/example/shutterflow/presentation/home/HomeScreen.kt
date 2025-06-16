@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.home.components.LearnList
 import com.example.shutterflow.presentation.home.components.LearnTabData
@@ -97,7 +98,8 @@ val sampleLearnTabs = listOf(
 
 @Composable
 fun HomeScreen(
-  sharedVm: UserSettingsViewModel
+  sharedVm: UserSettingsViewModel,
+  navController: NavController,
 ){
   val scrollState = rememberScrollState()
   Surface {
@@ -107,7 +109,7 @@ fun HomeScreen(
         .verticalScroll(scrollState)
     ) {
 
-      TopAppBar(sharedVm)
+      TopAppBar( navController,sharedVm)
 
       HorizontalDivider(modifier = Modifier
         .fillMaxWidth()

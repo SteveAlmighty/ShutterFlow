@@ -1,5 +1,6 @@
 package com.example.shutterflow.presentation.gallery
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import java.io.File
 
@@ -60,8 +62,8 @@ fun CategoryGalleryScreen(
                 .fillMaxSize()
         ) {
             items(images) { image ->
-                Image(
-                    painter = rememberAsyncImagePainter(File(image.filePath)),
+                AsyncImage(
+                    model = File(image.filePath),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(4.dp)
@@ -69,7 +71,7 @@ fun CategoryGalleryScreen(
                         .clip(RoundedCornerShape(8.dp))
                         .fillMaxSize()
                         .clickable {
-                            navController.navigate("fullscreen/${image.filePath}")
+                            navController.navigate("fullscreen/${Uri.encode(image.filePath)}")
                         },
                     contentScale = ContentScale.Crop
                 )

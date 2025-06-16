@@ -114,7 +114,7 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
         ) {
             composable(route = "/home") {
                 bottomBarVisibility = true
-                HomeScreen(userPref)
+                HomeScreen(userPref, navController)
             }
 
             composable(route = "/explore") {

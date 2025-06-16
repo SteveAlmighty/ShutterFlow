@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,15 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.shutterflow.R
 import com.example.shutterflow.presentation.home.components.LearnList
-import com.example.shutterflow.presentation.home.components.PracticeCarousel
 import com.example.shutterflow.presentation.home.components.PracticeTab
-import com.example.shutterflow.presentation.home.components.PracticeTabData
 import com.example.shutterflow.presentation.home.sampleLearnTabs
 import com.example.shutterflow.presentation.home.samplePracticeTabs
 import com.example.shutterflow.ui.theme.TealBlue
@@ -58,7 +53,8 @@ fun ExploreScreen(
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Arrowback",
-                tint = Color.DarkGray
+                tint = Color.DarkGray,
+                modifier = Modifier.clickable { navController.popBackStack() }
             )
             Text(
                 text = "Photography Basics",

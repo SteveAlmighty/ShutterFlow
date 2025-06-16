@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -44,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.shutterflow.R
 import com.example.shutterflow.data.UserPreferencesManager
 import com.example.shutterflow.presentation.gallery.PhotoGalleryViewModel
@@ -71,6 +74,7 @@ fun ProfileScreen(
     viewModel: PhotoGalleryViewModel,
     sharedVm: UserSettingsViewModel
 ){
+    val scrollState = rememberScrollState()
 
     val userName by sharedVm.userName.collectAsState()
 
@@ -87,7 +91,9 @@ fun ProfileScreen(
     var showImagePicker by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         // Top Bar
         Row(
@@ -100,7 +106,8 @@ fun ProfileScreen(
             Icon(
                 imageVector = Icons.Default.Home,
                 contentDescription = "Home",
-                tint = Color.DarkGray
+                tint = Color.DarkGray,
+                modifier = Modifier.clickable { navController.navigate("/home") }
             )
             Text(
                 "My Profile",
@@ -111,7 +118,8 @@ fun ProfileScreen(
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
-                tint = Color.DarkGray
+                tint = Color.DarkGray,
+                modifier = Modifier.clickable { navController.navigate("/setting") }
             )
         }
 
@@ -124,8 +132,8 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter =  painterResource(id = selectedImageResId),
+            AsyncImage(
+                model =   selectedImageResId,
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(160.dp)
@@ -225,8 +233,8 @@ fun ProfileScreen(
                     userScrollEnabled = false // only show top 6
                 ) {
                     items(6) { index ->
-                        Image(
-                            painter = painterResource(id = sampleImages[index]),
+                        AsyncImage(
+                            model =  sampleImages[index],
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

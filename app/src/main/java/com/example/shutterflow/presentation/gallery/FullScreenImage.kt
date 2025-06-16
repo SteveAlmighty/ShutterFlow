@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import java.io.File
 
@@ -22,8 +23,8 @@ fun FullscreenImageScreen(imagePath: String, onBack: () -> Unit) {
             .clickable { onBack() },
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(model = File(imagePath)),
+        AsyncImage(
+            model =  File(imagePath),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit
