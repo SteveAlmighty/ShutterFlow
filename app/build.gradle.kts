@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.storage)
     implementation(libs.androidx.animation.android)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.room.runtime.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,13 +72,20 @@ dependencies {
     implementation ("androidx.compose.material3:material3:1.2.0")
     implementation ("androidx.compose.foundation:foundation:1.5.1")
 
-    implementation("androidx.room:room-runtime:2.6.1")
-    kapt ("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.1")
+    kapt ("androidx.room:room-compiler:2.7.1")
 
     // Kotlin Extensions and Coroutines support for Room
-    implementation ("androidx.room:room-ktx:2.6.1")
+    implementation ("androidx.room:room-ktx:2.7.1")
 
     implementation ("androidx.datastore:datastore-preferences:1.1.7")
+
+//    splash screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation("androidx.compose.animation:animation:1.6.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
 
 }

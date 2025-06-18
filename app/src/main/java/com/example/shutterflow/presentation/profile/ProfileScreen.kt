@@ -1,7 +1,6 @@
 package com.example.shutterflow.presentation.profile
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +55,7 @@ import com.example.shutterflow.presentation.profile.components.ProfilePicturePic
 import com.example.shutterflow.presentation.profile.components.avatarOptions
 import com.example.shutterflow.ui.theme.TealBlue
 import kotlinx.coroutines.launch
+import java.io.File
 
 
 val sampleImages = listOf(
@@ -76,6 +76,8 @@ fun ProfileScreen(
 ){
     val scrollState = rememberScrollState()
 
+    val images by viewModel.images.collectAsState()
+
     val userName by sharedVm.userName.collectAsState()
 
     val context = LocalContext.current
@@ -86,7 +88,6 @@ fun ProfileScreen(
     val selectedImageResId = remember(selectedImageName) {
         avatarOptions.find { it.second == selectedImageName }?.first ?: R.drawable.watermelon1
     }
-
 
     var showImagePicker by remember { mutableStateOf(false) }
 
@@ -151,7 +152,7 @@ fun ProfileScreen(
                     ProfilePicturePicker(
                         context = context,
                         currentSelection = selectedImageName
-                    ) { resId, imageName ->
+                    ) { _, imageName ->
                         scope.launch {
                             UserPreferencesManager.setProfilePictureUri(context, imageName)
                         }
@@ -213,7 +214,10 @@ fun ProfileScreen(
 
                     Text(
                         text = "See All",
-                        modifier = Modifier.padding(end = 10.dp),
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .clickable { navController.navigate("/gallery") }
+                        ,
                         fontSize = 12.sp,
                         color = TealBlue
                     )
@@ -232,9 +236,9 @@ fun ProfileScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     userScrollEnabled = false // only show top 6
                 ) {
-                    items(6) { index ->
+                    items(images.take(6)) { image ->
                         AsyncImage(
-                            model =  sampleImages[index],
+                            model =  File(image.filePath),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

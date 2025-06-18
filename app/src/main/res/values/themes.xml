@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.Shutterflow" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.YourApp.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/bluecamera</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
+        <item name="postSplashScreenTheme">@style/Theme.Shutterflow</item>
+    </style>
 </resources>

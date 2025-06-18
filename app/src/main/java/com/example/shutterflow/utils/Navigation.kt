@@ -40,7 +40,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.shutterflow.R
+import com.example.shutterflow.presentation.TutorialViewModelFactory
 import com.example.shutterflow.presentation.explore.ExploreScreen
+import com.example.shutterflow.presentation.explore.TutorialScreen
+import com.example.shutterflow.presentation.explore.TutorialViewModel
 import com.example.shutterflow.presentation.gallery.CategoryGalleryScreen
 import com.example.shutterflow.presentation.gallery.CategoryListScreen
 import com.example.shutterflow.presentation.gallery.FullscreenImageScreen
@@ -57,9 +60,14 @@ import com.example.shutterflow.ui.theme.TealBlue
 @Composable
 fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsViewModel) {
 
+
     val context = LocalContext.current
     val userPref: UserSettingsViewModel = viewModel(
         factory = ViewModelProvider.AndroidViewModelFactory(context.applicationContext as Application)
+    )
+    val tutorialContext = LocalContext.current.applicationContext as Application
+    val tutorialViewModel: TutorialViewModel = viewModel(
+        factory = TutorialViewModelFactory(tutorialContext)
     )
 
     val navController = rememberNavController()
@@ -99,7 +107,7 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
                         .clip(CircleShape)
                         .size(70.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add",)
+                    Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }
         },
@@ -114,12 +122,12 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
         ) {
             composable(route = "/home") {
                 bottomBarVisibility = true
-                HomeScreen(userPref, navController)
+                HomeScreen(userPref, navController, tutorialViewModel)
             }
 
             composable(route = "/explore") {
                 bottomBarVisibility = false
-                ExploreScreen(navController)
+                ExploreScreen(navController, tutorialViewModel)
             }
             composable(route = "/log") {
                 bottomBarVisibility = true
@@ -163,6 +171,15 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
             composable(route = "/setting") {
                 bottomBarVisibility = false
                 SettingsScreen(settingsViewModel)
+            }
+            composable(
+                route = "detail/{tutorialJson}",
+                arguments = listOf(navArgument("tutorialJson") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val json = backStackEntry.arguments?.getString("tutorialJson") ?: return@composable
+                TutorialScreen(
+                    tutorialJson = json
+                )
             }
         }
     }

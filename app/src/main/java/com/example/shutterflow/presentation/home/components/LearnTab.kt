@@ -1,7 +1,7 @@
 package com.example.shutterflow.presentation.home.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,43 +12,61 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.room.util.copy
 import coil.compose.AsyncImage
-import com.example.shutterflow.R
+import com.example.shutterflow.presentation.explore.Tutorial
+import com.example.shutterflow.presentation.explore.TutorialViewModel
 import com.example.shutterflow.ui.theme.TealBlue
+import com.google.gson.Gson
+import java.net.URLEncoder
 
 data class LearnTabData(
     val id: Int,
     val title: String,
     val description: String,
     val image: Int,
-    val color: Color,
+    val color: String,
     val duration: String
 )
 
 
 @Composable
 fun LearnTab(
- item: LearnTabData
+ item: Tutorial,
+ onClick: () -> Unit = {}
 ){
+
+    val context = LocalContext.current
+    val imageResId = remember(item.image) {
+        context.resources.getIdentifier(item.image, "drawable", context.packageName)
+    }
+
+    val tutorialColor = Color(android.graphics.Color.parseColor(item.color))
+
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(vertical = 5.dp, horizontal = 15.dp)
+            .clickable { onClick() }
 
     ) {
         Row(
@@ -64,15 +82,14 @@ fun LearnTab(
                     .padding(start = 10.dp, top = 15.dp, bottom = 40.dp)
                     .size(40.dp)
                     .clip(RoundedCornerShape(12))
-                    .background(item.color.copy(alpha = 0.15f)),
+                    .background(tutorialColor.copy(alpha = 0.15f)),
 
                 ) {
                 AsyncImage(
-                    model =  item.image,
+                    model =  imageResId,
                     contentDescription = "Camera",
                     modifier = Modifier
                         .size(25.dp)
-
                 )
             }
 
@@ -98,13 +115,13 @@ fun LearnTab(
                     modifier = Modifier
                         .padding(start = 10.dp, top = 6.dp, bottom = 6.dp)
                         .clip(RoundedCornerShape(19))
-                        .background(item.color.copy(alpha = 0.15f)),
+                        .background(tutorialColor.copy(alpha = 0.15f)),
 
                     ) {
                     Text(
                         text = "${item.duration} min",
                         fontSize = 7.sp,
-                        color = item.color,
+                        color = tutorialColor,
                         modifier = Modifier.padding(2.dp)
                     )
                 }
@@ -116,8 +133,11 @@ fun LearnTab(
 
 @Composable
 fun LearnList(
-    items: List<LearnTabData>
+    viewModel: TutorialViewModel, navController: NavController
 ){
+
+    val tutorials by viewModel.tutorials.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,11 +165,16 @@ fun LearnList(
             )
         }
 
-        for (item in items) {
-            LearnTab(item = item)
+        for (tutorial in tutorials.take(5)) {
+            LearnTab(
+                item = tutorial,
+                onClick = {
+                    val json = URLEncoder.encode(Gson().toJson(tutorial), "UTF-8")
+                    navController.navigate("detail/$json")
+                }
+            )
         }
     }
-
 }
 
 
@@ -157,42 +182,3 @@ fun LearnList(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun LearnTabPrev(){
-    val sampleLearnTabs = listOf(
-        LearnTabData(
-            id = 1,
-            title = "Composition Basics",
-            description = "Learn the rule of thirds and other fundamental composition techniques.",
-            image = R.drawable.baseline_grid_3x3_24, // Replace with your actual drawable
-            color = Color(0xFF4CAF50), // A shade of Green,
-            duration = "10"
-        ),
-        LearnTabData(
-            id = 2,
-            title = "Understanding Light",
-            description = "Explore natural vs. artificial light, and how to use it effectively.",
-            image = R.drawable.light1,    // Replace with your actual drawable
-            color = Color(0xFF2196F3) ,
-            duration = "15" // A shade of Blue
-        ),
-        LearnTabData(
-            id = 3,
-            title = "Manual Mode Mastery",
-            description = "Unlock your camera's full potential by mastering manual settings.",
-            image = R.drawable.baseline_handyman_24, // Replace with your actual drawable
-            color = Color(0xFFFF9800),
-            duration = "20" // A shade of Orange
-        ),
-        LearnTabData(
-            id = 4,
-            title = "Photo Editing Fundamentals",
-            description = "Basic post-processing techniques to enhance your images.",
-            image = R.drawable.editphoto,     // Replace with your actual drawable
-            color = Color(0xFF9C27B0),
-            duration = "25" // A shade of Purple
-        )
-    )
-    LearnList(items = sampleLearnTabs)
-}

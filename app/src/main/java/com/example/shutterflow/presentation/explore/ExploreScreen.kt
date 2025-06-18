@@ -29,14 +29,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.shutterflow.presentation.home.components.LearnList
 import com.example.shutterflow.presentation.home.components.PracticeTab
-import com.example.shutterflow.presentation.home.sampleLearnTabs
 import com.example.shutterflow.presentation.home.samplePracticeTabs
 import com.example.shutterflow.ui.theme.TealBlue
 
 
 @Composable
 fun ExploreScreen(
-    navController: NavController
+    navController: NavController,
+    tutVm: TutorialViewModel
 ){
     val scrollState = rememberScrollState()
     Column(
@@ -100,9 +100,9 @@ fun ExploreScreen(
             modifier = Modifier
                 .height(630.dp)
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             userScrollEnabled = false // only show top 6
         ) {
             items(6) { index ->
@@ -110,7 +110,10 @@ fun ExploreScreen(
             }
         }
 
-        LearnList(items = sampleLearnTabs)
+        LearnList(
+            viewModel = tutVm,
+            navController = navController
+        )
     }
 
 }

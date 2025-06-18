@@ -2,7 +2,6 @@ package com.example.shutterflow.presentation.settings
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shutterflow.data.ThemePreferenceManager
