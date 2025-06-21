@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,25 +24,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.room.util.copy
 import coil.compose.AsyncImage
-import com.example.shutterflow.presentation.explore.Tutorial
 import com.example.shutterflow.presentation.explore.TutorialViewModel
 import com.example.shutterflow.ui.theme.TealBlue
-import com.google.gson.Gson
-import java.net.URLEncoder
 
-data class LearnTabData(
+data class Tutorial(
     val id: Int,
     val title: String,
     val description: String,
-    val image: Int,
+    val image: String,
     val color: String,
-    val duration: String
+    val duration: String,
+    val url: String
 )
 
 
@@ -135,6 +131,7 @@ fun LearnTab(
 fun LearnList(
     viewModel: TutorialViewModel, navController: NavController
 ){
+    val uriHandler = LocalUriHandler.current
 
     val tutorials by viewModel.tutorials.collectAsState()
 
@@ -169,8 +166,10 @@ fun LearnList(
             LearnTab(
                 item = tutorial,
                 onClick = {
-                    val json = URLEncoder.encode(Gson().toJson(tutorial), "UTF-8")
-                    navController.navigate("detail/$json")
+//                    val json = URLEncoder.encode(Gson().toJson(tutorial), "UTF-8")
+//                    navController.navigate("detail/$json")
+
+                    uriHandler.openUri(tutorial.url)
                 }
             )
         }

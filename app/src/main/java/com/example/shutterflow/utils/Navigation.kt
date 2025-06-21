@@ -42,7 +42,6 @@ import androidx.navigation.navArgument
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.TutorialViewModelFactory
 import com.example.shutterflow.presentation.explore.ExploreScreen
-import com.example.shutterflow.presentation.explore.TutorialScreen
 import com.example.shutterflow.presentation.explore.TutorialViewModel
 import com.example.shutterflow.presentation.gallery.CategoryGalleryScreen
 import com.example.shutterflow.presentation.gallery.CategoryListScreen
@@ -172,15 +171,15 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
                 bottomBarVisibility = false
                 SettingsScreen(settingsViewModel)
             }
-            composable(
-                route = "detail/{tutorialJson}",
-                arguments = listOf(navArgument("tutorialJson") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val json = backStackEntry.arguments?.getString("tutorialJson") ?: return@composable
-                TutorialScreen(
-                    tutorialJson = json
-                )
-            }
+//            composable(
+//                route = "detail/{tutorialJson}",
+//                arguments = listOf(navArgument("tutorialJson") { type = NavType.StringType })
+//            ) { backStackEntry ->
+//                val json = backStackEntry.arguments?.getString("tutorialJson") ?: return@composable
+//                TutorialScreen(
+//                    tutorialJson = json
+//                )
+//            }
         }
     }
 }
