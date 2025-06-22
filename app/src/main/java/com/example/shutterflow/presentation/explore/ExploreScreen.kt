@@ -80,7 +80,7 @@ fun ExploreScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Pratice Challenges",
+                text = "Tutorials",
                 color = Color.DarkGray,
                 modifier = Modifier.padding(start = 10.dp),
                 style = MaterialTheme.typography.titleLarge,
@@ -89,7 +89,9 @@ fun ExploreScreen(
 
             Text(
                 text = "See All",
-                modifier = Modifier.padding(end = 10.dp),
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .clickable { navController.navigate("tutorials") },
                 fontSize = 12.sp,
                 color = TealBlue
             )

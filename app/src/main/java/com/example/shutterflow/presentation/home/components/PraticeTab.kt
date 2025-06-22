@@ -1,6 +1,5 @@
 package com.example.shutterflow.presentation.home.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,26 +23,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.shutterflow.R
 import com.example.shutterflow.ui.theme.TealBlue
 
 
 @Composable
 fun PracticeTab(
-    item: PracticeTabData
+    item: PracticeTabData,
 ){
+    val uriHandler = LocalUriHandler.current
 
     Card(
         modifier = Modifier
             .width(170.dp)
             .height(200.dp)
-            .clickable {  },
+            .clickable { uriHandler.openUri(item.url) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(10.dp),
     ) {
@@ -53,8 +52,8 @@ fun PracticeTab(
                 model = item.image,
                 contentDescription = "Card Image",
                 modifier = Modifier
-                    .width(170.dp).
-                    height(110.dp),
+                    .fillMaxWidth()
+                    .height(110.dp),
                 contentScale = ContentScale.Crop
             )
 
@@ -89,12 +88,14 @@ data class PracticeTabData(
     val id: Int,
     val title: String,
     val description: String,
-    val image: Int
+    val image: Int,
+    val url: String
 )
 
 @Composable
 fun PracticeCarousel(
-    items: List<PracticeTabData>
+    items: List<PracticeTabData>,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -109,7 +110,7 @@ fun PracticeCarousel(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Practice challenges",
+                text = "Tutorials",
                 modifier = Modifier.padding(start = 10.dp),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
@@ -117,7 +118,9 @@ fun PracticeCarousel(
 
             Text(
                 text = "See All",
-                modifier = Modifier.padding(end = 10.dp),
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .clickable { navController.navigate("tutorials") },
                 fontSize = 12.sp,
                 color = TealBlue
             )
@@ -142,47 +145,3 @@ fun PracticeCarousel(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun PracticeTabPrev(){
-    val samplePracticeTabs = listOf(
-        PracticeTabData(
-            id = 1,
-            title = "Portraits",
-            description = "Master depth & focus",
-            image = R.drawable.portrait1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 2,
-            title = "Landscapes",
-            description = "Capture scenic views",
-            image = R.drawable.landscape1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 3,
-            title = "Street Style",
-            description = "Urban life moments",
-            image = R.drawable.street1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 4,
-            title = "Food",
-            description = "Capture culinary moments",
-            image = R.drawable.food1 // Replace with your actual drawable resource
-        ),
-        PracticeTabData(
-            id = 5,
-            title = "Night Sky",
-            description = "Astrophotography basics",
-            image = R.drawable.astro1
-        ),
-        PracticeTabData(
-            id = 6,
-            title = "Macro",
-            description = "Capture stunning details",
-            image = R.drawable.macro1
-        )
-
-    )
-    PracticeCarousel(items = samplePracticeTabs)
-}

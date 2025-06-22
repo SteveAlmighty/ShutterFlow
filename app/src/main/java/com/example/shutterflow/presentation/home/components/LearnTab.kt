@@ -129,7 +129,8 @@ fun LearnTab(
 
 @Composable
 fun LearnList(
-    viewModel: TutorialViewModel, navController: NavController
+    viewModel: TutorialViewModel,
+    navController: NavController
 ){
     val uriHandler = LocalUriHandler.current
 
@@ -156,7 +157,10 @@ fun LearnList(
 
             Text(
                 text = "More",
-                modifier = Modifier.padding(end = 10.dp),
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .clickable { navController.navigate("learning_resources") }
+                ,
                 fontSize = 12.sp,
                 color = TealBlue
             )
@@ -166,9 +170,6 @@ fun LearnList(
             LearnTab(
                 item = tutorial,
                 onClick = {
-//                    val json = URLEncoder.encode(Gson().toJson(tutorial), "UTF-8")
-//                    navController.navigate("detail/$json")
-
                     uriHandler.openUri(tutorial.url)
                 }
             )

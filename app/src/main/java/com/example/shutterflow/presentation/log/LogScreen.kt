@@ -81,7 +81,7 @@ fun ShootPlannerScreen(viewModel: ShootViewModel = viewModel()) {
             onClick = { showDatePicker = true },
             colors = ButtonDefaults.buttonColors(
                 containerColor = LightTeal,
-                contentColor = Color.Black
+                contentColor = Color.White
             )
             ) {
             Text("Select Date")
@@ -91,7 +91,7 @@ fun ShootPlannerScreen(viewModel: ShootViewModel = viewModel()) {
             onClick = { showTimePicker = true },
             colors = ButtonDefaults.buttonColors(
             containerColor = LightTeal,
-            contentColor = Color.Black
+            contentColor = Color.White
         )) {
             Text("Select Time")
         }
@@ -130,7 +130,7 @@ fun ShootPlannerScreen(viewModel: ShootViewModel = viewModel()) {
             modifier = Modifier.align(Alignment.End),
             colors = ButtonDefaults.buttonColors(
                 containerColor = LightTeal,
-                contentColor = Color.Black
+                contentColor = Color.White
             )
         ) {
             Text(if (editingShoot != null) "Update Shoot" else "Schedule Notification")

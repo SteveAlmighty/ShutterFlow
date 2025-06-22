@@ -5,9 +5,11 @@ import android.app.Application
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -42,7 +44,9 @@ import androidx.navigation.navArgument
 import com.example.shutterflow.R
 import com.example.shutterflow.presentation.TutorialViewModelFactory
 import com.example.shutterflow.presentation.explore.ExploreScreen
+import com.example.shutterflow.presentation.explore.LearningResourcesScreen
 import com.example.shutterflow.presentation.explore.TutorialViewModel
+import com.example.shutterflow.presentation.explore.TutorialsScreen
 import com.example.shutterflow.presentation.gallery.CategoryGalleryScreen
 import com.example.shutterflow.presentation.gallery.CategoryListScreen
 import com.example.shutterflow.presentation.gallery.FullscreenImageScreen
@@ -102,16 +106,17 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
                     },
                     containerColor = TealBlue,
                     modifier = Modifier
-                        .offset(y = 43.dp)
+                        .offset(y = 47.dp)
                         .clip(CircleShape)
-                        .size(70.dp)
+                        .size(55.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
+                    Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
                 }
             }
         },
         floatingActionButtonPosition = FabPosition.Center,
 
+        contentWindowInsets = WindowInsets.safeDrawing
 
     ) {
         NavHost(
@@ -171,15 +176,13 @@ fun NavHostScreen(viewModel: PhotoGalleryViewModel, settingsViewModel: SettingsV
                 bottomBarVisibility = false
                 SettingsScreen(settingsViewModel)
             }
-//            composable(
-//                route = "detail/{tutorialJson}",
-//                arguments = listOf(navArgument("tutorialJson") { type = NavType.StringType })
-//            ) { backStackEntry ->
-//                val json = backStackEntry.arguments?.getString("tutorialJson") ?: return@composable
-//                TutorialScreen(
-//                    tutorialJson = json
-//                )
-//            }
+
+            composable("tutorials") {
+                TutorialsScreen()
+            }
+            composable("learning_resources") {
+                LearningResourcesScreen(tutorialViewModel)
+            }
         }
     }
 }
@@ -202,7 +205,7 @@ fun NavigationBottomBar(
     val currentRoute = navBackStackEntry.value?.destination?.route
 
     BottomAppBar (
-        modifier = Modifier.height(100.dp) ,//
+        modifier = Modifier.height(60.dp) ,//
         tonalElevation = 4.dp
     ){
         // Bottom Navigation Items
