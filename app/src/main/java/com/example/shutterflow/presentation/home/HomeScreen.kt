@@ -62,7 +62,7 @@ val samplePracticeTabs = listOf(
   PracticeTabData(
     id = 5,
     title = "Night Sky",
-    description = "Astrophotography basics",
+    description = "Astro photography basics",
     image = R.drawable.astro1,
     url = "https://photographylife.com/how-to-photograph-the-milky-way"
   ),

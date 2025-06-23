@@ -43,7 +43,7 @@ fun TopAppBar(
         avatarOptions.find { it.second == selectedImageName }?.first ?: R.drawable.watermelon1
     }
 
-    Surface () {
+    Surface {
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),

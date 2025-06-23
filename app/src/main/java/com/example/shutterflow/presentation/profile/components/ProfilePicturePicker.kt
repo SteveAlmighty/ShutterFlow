@@ -1,7 +1,5 @@
 package com.example.shutterflow.presentation.profile.components
 
-import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.shutterflow.R
@@ -38,7 +35,6 @@ val avatarOptions = listOf(
 
 @Composable
 fun ProfilePicturePicker(
-    context: Context,
     currentSelection: String?,
     onImageSelected: (Int, String) -> Unit
 ) {

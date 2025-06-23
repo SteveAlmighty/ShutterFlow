@@ -60,7 +60,7 @@ fun TutorialsScreen() {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 userScrollEnabled = true
             ) {
-                items(10) { index ->
+                items(11) { index ->
                     PracticeTab(item = samplePracticeTabs[index])
                 }
             }

@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import com.example.shutterflow.data.ThemePreferenceManager
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
             ThemePreferenceManager.getDarkModeFlow(this@MainActivity).collect { isDark ->
 
                 setContent {
-                    var showSplash by remember { mutableStateOf(true) }
+                    var showSplash by rememberSaveable{ mutableStateOf(true) }
 
                     LaunchedEffect(Unit) {
                         delay(2000) // simulate loading or delay for 2 seconds

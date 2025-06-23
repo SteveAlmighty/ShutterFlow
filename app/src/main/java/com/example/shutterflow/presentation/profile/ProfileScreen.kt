@@ -58,14 +58,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-val sampleImages = listOf(
-    R.drawable.astro1,
-    R.drawable.food1,
-    R.drawable.macro1,
-    R.drawable.nature1,
-    R.drawable.landscape1,
-    R.drawable.street1
-)
+
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -150,7 +143,6 @@ fun ProfileScreen(
                 title = { Text("Select Profile Picture") },
                 text = {
                     ProfilePicturePicker(
-                        context = context,
                         currentSelection = selectedImageName
                     ) { _, imageName ->
                         scope.launch {

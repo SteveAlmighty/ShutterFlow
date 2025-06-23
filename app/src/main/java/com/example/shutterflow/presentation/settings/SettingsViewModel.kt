@@ -22,12 +22,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val _isDarkMode = MutableStateFlow(false)
     val isDarkMode: StateFlow<Boolean> = _isDarkMode
 
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             ThemePreferenceManager.getDarkModeFlow(application).collect {
                 _isDarkMode.value = it
             }
         }
+
 
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -49,4 +51,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             UserPreferencesManager.setUserName(context, name)
         }
     }
+
+
+
 }

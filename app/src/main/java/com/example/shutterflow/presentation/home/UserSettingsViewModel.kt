@@ -33,15 +33,15 @@ class UserSettingsViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun updateProfileImage(imageName: String) {
-        viewModelScope.launch {
-            UserPreferencesManager.setProfilePictureUri(context, imageName)
-        }
-    }
-
-    fun updateUserName(name: String){
-        viewModelScope.launch {
-            UserPreferencesManager.setUserName(context, name)
-        }
-    }
+//    fun updateProfileImage(imageName: String) {
+//        viewModelScope.launch {
+//            UserPreferencesManager.setProfilePictureUri(context, imageName)
+//        }
+//    }
+//
+//    fun updateUserName(name: String){
+//        viewModelScope.launch {
+//            UserPreferencesManager.setUserName(context, name)
+//        }
+//    }
 }

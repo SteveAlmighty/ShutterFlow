@@ -73,7 +73,8 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                 onCheckedChange = { viewModel.toggleDarkMode(it) }
             )
         }
+
     }
 
 
-    }
+}

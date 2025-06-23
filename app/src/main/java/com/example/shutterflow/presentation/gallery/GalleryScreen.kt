@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,14 +43,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import java.io.File
 
 @Composable
 fun PhotoGalleryScreen(viewModel: PhotoGalleryViewModel) {
     val context = LocalContext.current
     val images by viewModel.images.collectAsState()
-    val categories = listOf("Portrait", "Landscape", "Street", "Night", "Creative")
+    val categories = listOf("Portrait", "Landscape", "Street", "Night", "Creative", "Product", "Travel", "Nature", "City", "Abstract", "Wildlife", "Macro")
     var showCategoryDialog by remember { mutableStateOf<Boolean?>(false) }
     var pendingUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
 

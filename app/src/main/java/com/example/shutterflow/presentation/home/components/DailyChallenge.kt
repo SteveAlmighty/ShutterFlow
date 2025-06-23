@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.shutterflow.ui.theme.LightTeal
@@ -31,7 +30,6 @@ import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
-
 
 
 data class ChallengeItem(
@@ -134,9 +132,6 @@ fun DailyChallengeTab(
         }
     }
 }
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun Challprev(){
-//    DailyChallengeTab()
-//}
+
+
+
